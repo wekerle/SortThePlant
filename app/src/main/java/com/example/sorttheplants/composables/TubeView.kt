@@ -1,55 +1,77 @@
-package com.example.sorttheplants.composables
-
-import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
-import android.util.AttributeSet
-import android.view.View
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
-import com.example.sorttheplants.R
+import androidx.compose.ui.unit.dp
 
-class TubeView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
+@Composable
+fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
+    var reorderedIcons by remember { mutableStateOf(iconList) }
+    var isFirstIconAtTop by remember { mutableStateOf(false) }
 
-    // Paint objects to set the color and style of the tube and the liquid inside
-    private val tubePaint = Paint().apply {
-        color = 0xFF808080.toInt() // Gray color for the tube
-        style = Paint.Style.FILL
-    }
+    Box(
+        modifier = modifier
+            .size(75.dp, 300.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        val firstIconOffset by animateFloatAsState(
+            targetValue = if (isFirstIconAtTop) -100f else 0f, // Move icon upwards smoothly
+            animationSpec = tween(durationMillis = 500)
+        )
 
-    private val iconList = listOf(
-        R.drawable.wheat,  // Replace with your actual PNG file names
-        R.drawable.barley,
-        R.drawable.oat,
-        R.drawable.lucern,
-        R.drawable.lucern2
-    )
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val tubeWidth = size.width
+            val tubeHeight = size.height
+            val tubeX = (size.width - tubeWidth) / 2
+            val tubeY = 0f
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+            drawRoundRect(
+                color = Color.LightGray, // Tube color
+                topLeft = Offset(tubeX, tubeY),
+                size = Size(tubeWidth, tubeHeight),
+                cornerRadius = CornerRadius(40f, 40f),
+               // style = Fill,
+                Stroke(width = 4f)
+            )
+        }
 
-        // Calculate the tube's position and size
-        val left = width * 0.2f
-        val top = height * 0.1f
-        val right = width * 0.8f
-        val bottom = height * 0.8f
-
-        // Draw the tube (a rectangle with rounded corners)
-        val tubeRect = RectF(left, top, right, bottom)
-        canvas.drawRoundRect(tubeRect, 70f, 70f, tubePaint)
-
-        val iconSpacing = (bottom - top) / (iconList.size + 1)
-
-        // Loop through the icon list and draw each icon inside the tube
-        for (i in iconList.indices) {
-            val iconTop = top + (iconSpacing * (i + 1))
-            val iconBottom = iconTop + 75f // Icon height (adjust size as needed)
-            val iconLeft = left + (right - left - 75f) / 2 // Center the icon horizontally
-            val iconRight = iconLeft + 75f // Icon width (adjust size as needed)
-
-            // Draw the icon
-          //  val iconBitmap = painterResource(id = iconList[i]).toBitmap()
-            //canvas.drawBitmap(iconBitmap, iconLeft, iconTop, null)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    // Handle click here
+                    println("TubeView clicked!")
+                },
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            iconList.forEach { iconRes ->
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = "Tube Icon",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

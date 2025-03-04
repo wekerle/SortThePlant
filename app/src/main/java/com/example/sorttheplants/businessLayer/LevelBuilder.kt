@@ -20,7 +20,16 @@ class LevelBuilder private constructor() {
         myDic.put(1, listOf(
             listOf("buz","arp","tor"),
             listOf("arp", "arp","buz"),
-            listOf("buz", "arp","buz")
+            listOf("buz", "arp","buz"),
+            listOf("buz", "arp","buz"),
+                    listOf("buz", "arp","buz"),
+                listOf("buz", "arp","buz"),
+        listOf("buz", "arp","buz"),
+        listOf("buz", "arp","buz"),
+                listOf("buz", "arp","buz"),
+                listOf("buz", "arp","buz"),
+        listOf("buz", "arp","buz"),
+        listOf("buz", "arp","buz")
         ))
     }
 
