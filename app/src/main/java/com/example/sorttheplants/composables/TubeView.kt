@@ -1,4 +1,5 @@
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,25 +21,43 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
-    var reorderedIcons by remember { mutableStateOf(iconList) }
-    var isFirstIconAtTop by remember { mutableStateOf(false) }
+    var tubePosition by remember { mutableStateOf(Offset.Zero) }
+    var firstIconPosition by remember { mutableStateOf(Offset.Zero) }
+    var isOnTopOfTube by remember { mutableStateOf(false) }
+    var imageHeight by remember { mutableStateOf(0) }
+
+    val animatedOffset by animateOffsetAsState(
+        targetValue = if (isOnTopOfTube)
+            Offset(tubePosition.x, tubePosition.y-imageHeight/2)
+        else
+            firstIconPosition,
+        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing) // Smooth animation
+    )
+
 
     Box(
         modifier = modifier
-            .size(75.dp, 300.dp),
+            .onGloballyPositioned { coordinates ->
+                tubePosition = Offset(
+                    x = coordinates.positionInRoot().x,
+                    y = coordinates.positionInRoot().y
+                )
+            }
+            .size(75.dp, 265.dp)
+            .clickable()  {
+                isOnTopOfTube = !isOnTopOfTube
+            },
         contentAlignment = Alignment.BottomCenter
     ) {
-        val firstIconOffset by animateFloatAsState(
-            targetValue = if (isFirstIconAtTop) -100f else 0f, // Move icon upwards smoothly
-            animationSpec = tween(durationMillis = 500)
-        )
 
         Canvas(modifier = Modifier.matchParentSize()) {
             val tubeWidth = size.width
@@ -57,19 +77,39 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    // Handle click here
-                    println("TubeView clicked!")
-                },
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            iconList.forEach { iconRes ->
+            iconList.forEachIndexed  { index,iconRes ->
                 Image(
                     painter = painterResource(id = iconRes),
                     contentDescription = "Tube Icon",
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            if (index == 0) {  // Only store position for the first icon
+                                firstIconPosition = Offset(
+                                    x = coordinates.positionInRoot().x,
+                                    y = coordinates.positionInRoot().y
+                                )
+                                imageHeight = coordinates.size.height
+                            }
+                        }
+                        .offset {
+                            if (index == 0) {
+                                IntOffset(
+                                    (animatedOffset.x - firstIconPosition.x).toInt(),
+                                    (animatedOffset.y - firstIconPosition.y).toInt()
+                                  //  firstIconPosition.x.toInt(),
+                                   // firstIconPosition.y.toInt()
+                                    //animatedOffset.x.toInt(),
+                                   // animatedOffset.y.toInt()
+                                )
+                            } else {
+                                IntOffset(0, 0) // Other icons stay in place
+                           }
+                        }
                 )
             }
         }

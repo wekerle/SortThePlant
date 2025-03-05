@@ -35,18 +35,24 @@ fun GameContent(level:List<List<String>>?) {
             for(item in chunk)
             {
                 Column(modifier = Modifier.weight(1f).padding(horizontal = 4.dp, vertical = 0.dp)){
-                    val iconList = listOf(
-                        R.drawable.wheat,
-                        R.drawable.barley,
-                        R.drawable.oat,
-                        // R.drawable.sunflower,
-                        //  R.drawable.lucern,
-                        R.drawable.lucern2
-                    )
-
-                    TubeView(iconList = iconList)
+                    TubeView(iconList = getIconListFromCode(item))
                 }
             }
         }
+    }
+}
+
+private fun getIconListFromCode(iconCodes:List<String>) :List<Int>
+{
+    return iconCodes.map{getIconFromCode(it)}
+}
+
+private fun getIconFromCode(code:String):Int
+{
+    return when (code) {
+        "buz" -> R.drawable.wheat
+        "arp" -> R.drawable.barley
+        "tor" -> R.drawable.corn
+        else -> R.drawable.oat // Default image if no match
     }
 }

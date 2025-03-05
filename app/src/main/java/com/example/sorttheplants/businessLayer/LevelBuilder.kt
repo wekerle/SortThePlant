@@ -18,18 +18,18 @@ class LevelBuilder private constructor() {
     fun buildLevel()
     {
         myDic.put(1, listOf(
-            listOf("buz","arp","tor"),
+            listOf("buz","arp","tor","nap"),
             listOf("arp", "arp","buz"),
+            listOf("buz", "arp"),
+            listOf("buz"),
+            listOf("luc", "arp","buz"),
             listOf("buz", "arp","buz"),
             listOf("buz", "arp","buz"),
-                    listOf("buz", "arp","buz"),
-                listOf("buz", "arp","buz"),
-        listOf("buz", "arp","buz"),
-        listOf("buz", "arp","buz"),
-                listOf("buz", "arp","buz"),
-                listOf("buz", "arp","buz"),
-        listOf("buz", "arp","buz"),
-        listOf("buz", "arp","buz")
+            listOf("buz", "arp","buz"),
+            listOf("buz", "arp","buz"),
+            listOf("buz", "arp","buz"),
+            listOf("buz", "arp","buz"),
+            listOf("buz", "arp","buz")
         ))
     }
 

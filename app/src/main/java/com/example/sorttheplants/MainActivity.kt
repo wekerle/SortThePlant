@@ -126,69 +126,6 @@ fun GameScreen(onBackToHome: () -> Unit) {
 }
 
 @Composable
-fun GameContent2(level:List<List<String>>?) {
-    if(level==null)
-    {
-        return
-    }
-
-    val maxColumn = 5
-    val mainRowsCount=level.size / maxColumn + 1
-
-    for (row in 0 until mainRowsCount)
-    {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly)
-        {
-            for(item in level.indices)
-            {
-                Column(modifier = Modifier.weight(1f)){
-                    var container=level[item]
-                    for(cont in container.indices)
-                    {
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly)
-                        {
-                            var currentPlant=container[cont]
-                            Image(
-                                painter = painterResource(id = getImageByString(currentPlant)),
-                                contentDescription = "Custom PNG Icon",
-                                modifier = Modifier
-                                    .size(75.dp)
-                                    .padding(5.dp)
-                            )
-    //                    Button(
-    //                        onClick = {},
-    //                        modifier = Modifier
-    //                            .weight(1f)
-    //                            .padding(8.dp)
-    //                    ) {
-    //                        Text("Button $row, $cont}")
-    //                    }
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-fun getImageByString(code: String):Int
-{
-    return when (code) {
-        "buz" -> R.drawable.wheat
-        "arp" -> R.drawable.barley
-        "tor" -> R.drawable.corn
-        else -> R.drawable.oat // Default image if no match
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewGameUI() {
-    GameUI()
-}
-
-@Composable
 fun GameUI() {
     // Main Column to organize the UI elements vertically
     Column(modifier = Modifier.fillMaxSize()) {
