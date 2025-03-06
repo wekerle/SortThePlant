@@ -30,31 +30,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
+fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier, onOtherClick:()->Unit) {
     var tubePosition by remember { mutableStateOf(Offset.Zero) }
     var firstIconPosition by remember { mutableStateOf(Offset.Zero) }
     var isOnTopOfTube by remember { mutableStateOf(false) }
     var imageHeight by remember { mutableStateOf(0) }
-    var isAnimationReady by remember { mutableStateOf(false) }
     var hasStarted by remember { mutableStateOf(false) }
-
-    //var animatedOffset by remember { mutableStateOf(Offset.Zero) }
-
-//    LaunchedEffect(firstIconPosition) {
-//        if (firstIconPosition != Offset.Zero) {
-//            isAnimationReady = true
-//            //animatedOffset = firstIconPosition
-//        }
-//    }
-
-//    LaunchedEffect(isOnTopOfTube) {
-//        if (isAnimationReady) {
-//            animatedOffset = if (isOnTopOfTube)
-//                Offset(firstIconPosition.x, tubePosition.y - imageHeight)
-//            else
-//                firstIconPosition
-//        }
-//    }
 
     val animatedOffset by animateOffsetAsState(
         targetValue = if (isOnTopOfTube && hasStarted)
@@ -76,8 +57,9 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
             }
             .size(75.dp, 265.dp)
             .clickable()  {
-                isOnTopOfTube = !isOnTopOfTube
+               // isOnTopOfTube = !isOnTopOfTube
                 hasStarted = true
+                onOtherClick()
             },
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -117,8 +99,6 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
                                     y = coordinates.positionInRoot().y
                                 )
                                 imageHeight = coordinates.size.height
-                              //  animatedOffset = firstIconPosition
-                                isAnimationReady = true
                             }
                         }
                         .offset {
@@ -126,12 +106,6 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier) {
                                 IntOffset(
                                     (if (hasStarted) (animatedOffset.x - firstIconPosition.x).toInt() else 0),
                                     (if (hasStarted) (animatedOffset.y - firstIconPosition.y).toInt() else 0)
-                                  //  (animatedOffset.x - firstIconPosition.x).toInt(),
-                                    //(animatedOffset.y - firstIconPosition.y).toInt()
-                                  //  firstIconPosition.x.toInt(),
-                                   // firstIconPosition.y.toInt()
-                                    //animatedOffset.x.toInt(),
-                                   // animatedOffset.y.toInt()
                                 )
                             } else {
                                 IntOffset(0, 0) // Other icons stay in place
