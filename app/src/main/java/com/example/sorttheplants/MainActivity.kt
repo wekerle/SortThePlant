@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sorttheplants.ui.theme.SortThePlantsTheme
 import androidx.compose.foundation.Image
@@ -32,8 +31,8 @@ import com.example.sorttheplants.businessLayer.LevelBuilder
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.sorttheplants.composables.ButtonWithIcon
-import com.example.sorttheplants.composables.GameContent
+import com.example.sorttheplants.ui.composables.ButtonWithIcon
+import com.example.sorttheplants.ui.composables.GameContent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

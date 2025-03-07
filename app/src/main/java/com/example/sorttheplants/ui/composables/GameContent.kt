@@ -1,4 +1,4 @@
-package com.example.sorttheplants.composables
+package com.example.sorttheplants.ui.composables
 
 import TubeView
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.sorttheplants.R
+import com.example.sorttheplants.viewmodel.TubeViewModel
 
 @Composable
 fun GameContent(level:List<List<String>>?) {
@@ -37,12 +38,12 @@ fun GameContent(level:List<List<String>>?) {
 
     var tubeViewIndex=0;
 
-    var tubeStates by remember {
+    var tubeViewModelList by remember {
         mutableStateOf(
             chunkedLevels.flatten().map { item ->
-                val tubeState = TubeState(id = tubeViewIndex, iconList = getIconListFromCode(item))
+                val model = TubeViewModel(id=tubeViewIndex,iconList = getIconListFromCode(item).toMutableList())
                 tubeViewIndex++
-                tubeState
+                model
             }.associateBy { it.id }
         )
     }
@@ -50,22 +51,22 @@ fun GameContent(level:List<List<String>>?) {
     var previousId=-1
     var currentId=-1
     val onOtherClick:(Int)->Unit={clickedId ->
-        tubeStates = tubeStates.toMutableMap().apply {
-            //this[clickedId] = this[clickedId]?.copy(isOnTopOfTube = !this[clickedId]!!.isOnTopOfTube)!!
+        tubeViewModelList = tubeViewModelList.toMutableMap().apply {
            previousId=currentId
            currentId=clickedId
 
             if(previousId==currentId)
             {
-                //this[currentId]?.copy(isOnTopOfTube = !this[currentId]!!.isOnTopOfTube)
-                this[currentId]?.isOnTopOfTube=true
+                this[currentId]?.isOnTopOfTube=!this[currentId]?.isOnTopOfTube!!
             }else
             {
-
+                this[currentId]?.isOnTopOfTube=!this[currentId]?.isOnTopOfTube!!
+                if(previousId!=-1)
+                {
+                    this[previousId]?.isOnTopOfTube=false
+                }
             }
-            var x=clickedId
-            var xx =0
-        }
+      }
     }
 
     tubeViewIndex=0;
@@ -76,8 +77,11 @@ fun GameContent(level:List<List<String>>?) {
             for(item in chunk)
             {
                 Column(modifier = Modifier.weight(1f).padding(horizontal = 4.dp, vertical = 0.dp)){
-                    val tubeState = tubeStates[tubeViewIndex] ?: return@Column
-                    TubeView(iconList = getIconListFromCode(item),onOtherClick={ onOtherClick(tubeState.id) })
+                    val model = tubeViewModelList[tubeViewIndex] ?: return@Column
+                    model.setOtherClick { clickedId ->
+                        onOtherClick(clickedId)
+                    }
+                    TubeView(model,modifier = Modifier)
                 }
 
                 tubeViewIndex++
@@ -86,15 +90,9 @@ fun GameContent(level:List<List<String>>?) {
     }
 }
 
-data class TubeState(
-    val id: Int,
-    val iconList: List<Int>,
-    var isOnTopOfTube: Boolean = false
-)
-
 private fun getIconListFromCode(iconCodes:List<String>) :List<Int>
 {
-    return iconCodes.map{getIconFromCode(it)}
+    return iconCodes.map{ getIconFromCode(it) }
 }
 
 private fun getIconFromCode(code:String):Int

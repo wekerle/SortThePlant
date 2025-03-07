@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,17 +27,18 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.sorttheplants.viewmodel.TubeViewModel
 
 @Composable
-fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier, onOtherClick:()->Unit) {
+fun TubeView(viewModel: TubeViewModel,modifier: Modifier) {
+
     var tubePosition by remember { mutableStateOf(Offset.Zero) }
     var firstIconPosition by remember { mutableStateOf(Offset.Zero) }
-    var isOnTopOfTube by remember { mutableStateOf(false) }
     var imageHeight by remember { mutableStateOf(0) }
     var hasStarted by remember { mutableStateOf(false) }
 
     val animatedOffset by animateOffsetAsState(
-        targetValue = if (isOnTopOfTube && hasStarted)
+        targetValue = if (viewModel.isOnTopOfTube && hasStarted)
             Offset(tubePosition.x, tubePosition.y-imageHeight/2)
         else
             firstIconPosition,
@@ -57,9 +57,9 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier, onOtherClick:()
             }
             .size(75.dp, 265.dp)
             .clickable()  {
-               // isOnTopOfTube = !isOnTopOfTube
+                //viewModel.isOnTopOfTube = !viewModel.isOnTopOfTube
                 hasStarted = true
-                onOtherClick()
+                viewModel.onOtherClick?.let { it(viewModel.id) }
             },
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -86,7 +86,7 @@ fun TubeView(iconList: List<Int>, modifier: Modifier = Modifier, onOtherClick:()
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            iconList.forEachIndexed  { index,iconRes ->
+            viewModel.iconList.forEachIndexed  { index,iconRes ->
                 Image(
                     painter = painterResource(id = iconRes),
                     contentDescription = "Tube Icon",
