@@ -34,6 +34,10 @@ class LevelBuilder private constructor() {
         myDic.put(2, listOf(
             listOf("buz")
         ))
+        myDic.put(3, listOf(
+            listOf("buz"),
+            listOf("buz")
+        ))
     }
 
     fun getLevelNextLevel(currentLevel: Int): List<List<String>>?

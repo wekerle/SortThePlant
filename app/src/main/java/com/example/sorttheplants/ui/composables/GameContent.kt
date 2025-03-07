@@ -60,10 +60,29 @@ fun GameContent(level:List<List<String>>?) {
                 this[currentId]?.isOnTopOfTube=!this[currentId]?.isOnTopOfTube!!
             }else
             {
-                this[currentId]?.isOnTopOfTube=!this[currentId]?.isOnTopOfTube!!
-                if(previousId!=-1)
+                var moveCurrentUp: Boolean  = false
+                if(this[previousId]?.isOnTopOfTube==true)
                 {
-                    this[previousId]?.isOnTopOfTube=false
+                    if(this[previousId]?.firstIconRes==this[currentId]?.firstIconRes)
+                    {
+                        this[previousId]?.nextTubePosition= this[currentId]?.tubePosition!!
+                        this[previousId]?.moveToNextTube=true
+                    }
+                    else
+                    {
+                        moveCurrentUp=true
+                    }
+                }else
+                {
+                    moveCurrentUp=true
+                }
+                if(moveCurrentUp)
+                {
+                    this[currentId]?.isOnTopOfTube=!this[currentId]?.isOnTopOfTube!!
+                    if(previousId!=-1)
+                    {
+                        this[previousId]?.isOnTopOfTube=false
+                    }
                 }
             }
       }

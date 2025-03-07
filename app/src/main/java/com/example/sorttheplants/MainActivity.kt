@@ -38,23 +38,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-
-
-       // TubeView(iconList = iconList)
-
-      //  val linearLayout = LinearLayout(this)
-        //linearLayout.orientation = LinearLayout.VERTICAL
-
-        // Create an instance of TestTubeView
-       // val testTubeView = TubeView(this)
-
-        // Add the TestTubeView to the container
-       // linearLayout.addView(testTubeView)
-
-        // Set the layout as the content view
-        //setContentView(linearLayout)
-
         setContent {
             SortThePlantsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -167,7 +150,7 @@ fun GameUI() {
         // Game content (for example, a grid or game board)
         val levelBuilder = LevelBuilder.getInstance()
         levelBuilder.buildLevel()
-        var level=levelBuilder.getLevelNextLevel(1)
+        var level=levelBuilder.getLevelNextLevel(3)
 
         GameContent(level)
     }

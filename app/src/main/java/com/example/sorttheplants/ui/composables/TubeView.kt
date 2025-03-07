@@ -32,25 +32,62 @@ import com.example.sorttheplants.viewmodel.TubeViewModel
 @Composable
 fun TubeView(viewModel: TubeViewModel,modifier: Modifier) {
 
-    var tubePosition by remember { mutableStateOf(Offset.Zero) }
     var firstIconPosition by remember { mutableStateOf(Offset.Zero) }
     var imageHeight by remember { mutableStateOf(0) }
     var hasStarted by remember { mutableStateOf(false) }
+    var firstAnimationDone by remember { mutableStateOf(false) }
+
+    val moveToNextTube by viewModel::moveToNextTube
+
+    val secondAnimatedOffset by animateOffsetAsState(
+        targetValue = if (firstAnimationDone) {
+
+            Offset(viewModel.nextTubePosition.x-150, viewModel.nextTubePosition.y -150)
+        } else {
+            firstIconPosition
+        },
+        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing)
+    )
 
     val animatedOffset by animateOffsetAsState(
-        targetValue = if (viewModel.isOnTopOfTube && hasStarted)
-            Offset(tubePosition.x, tubePosition.y-imageHeight/2)
+        targetValue = if (viewModel.isOnTopOfTube && hasStarted && !firstAnimationDone)
+        {
+            if(moveToNextTube)
+            {
+                Offset(viewModel.nextTubePosition.x, viewModel.nextTubePosition.y-imageHeight/2)
+            }else
+            {
+                Offset(viewModel.tubePosition.x, viewModel.tubePosition.y-imageHeight/2)
+            }
+        }else if(firstAnimationDone)
+        {
+            Offset(viewModel.nextTubePosition.x, viewModel.nextTubePosition.y-150)
+        }
         else
-            firstIconPosition,
+        {
+            firstIconPosition
+        },
 
-        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing) // Smooth animation
+        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing),
+        finishedListener = {
+            //firstAnimationDone = true
+            //IntOffset(
+              //  (if (firstAnimationDone) (secondAnimatedOffset.x - firstIconPosition.x).toInt() else 0),
+               // (if (firstAnimationDone) (secondAnimatedOffset.y - firstIconPosition.y).toInt() else 0)
+           // )
+            if (viewModel.moveToNextTube) {
+                firstAnimationDone = true  // Mark first animation as complete
+            }
+        }
     )
+
+
 
 
     Box(
         modifier = modifier
             .onGloballyPositioned { coordinates ->
-                tubePosition = Offset(
+                viewModel.tubePosition = Offset(
                     x = coordinates.positionInRoot().x,
                     y = coordinates.positionInRoot().y
                 )
@@ -99,6 +136,7 @@ fun TubeView(viewModel: TubeViewModel,modifier: Modifier) {
                                     y = coordinates.positionInRoot().y
                                 )
                                 imageHeight = coordinates.size.height
+                                viewModel.firstIconRes = iconRes
                             }
                         }
                         .offset {
@@ -107,6 +145,19 @@ fun TubeView(viewModel: TubeViewModel,modifier: Modifier) {
                                     (if (hasStarted) (animatedOffset.x - firstIconPosition.x).toInt() else 0),
                                     (if (hasStarted) (animatedOffset.y - firstIconPosition.y).toInt() else 0)
                                 )
+//                                if(hasStarted)
+//                                {
+//                                    IntOffset(
+//                                        (if (hasStarted){ (animatedOffset.x - firstIconPosition.x).toInt()} else 0),
+//                                        (if (hasStarted) {(animatedOffset.y - firstIconPosition.y).toInt()} else 0)
+//                                    )
+//                                }else
+//                                {
+//                                    IntOffset(
+//                                        (if (hasStarted) (secondAnimatedOffset.x - firstIconPosition.x).toInt() else 0),
+//                                        (if (hasStarted) (secondAnimatedOffset.y - firstIconPosition.y).toInt() else 0)
+//                                    )
+//                                }
                             } else {
                                 IntOffset(0, 0) // Other icons stay in place
                            }
