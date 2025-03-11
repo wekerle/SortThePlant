@@ -88,6 +88,19 @@ fun GameContent(level:List<List<String>>?) {
       }
     }
 
+    val updateIcons2:()->Unit={
+        tubeViewModelList = tubeViewModelList.toMutableMap().apply {
+            this[previousId]?.isOnTopOfTube = false
+
+            var newIcons=getIconListFromCode(listOf("arp", "tor"))
+            this[previousId]?.updateIcons(newIcons)
+
+            var newIcons2=getIconListFromCode(listOf("buz", "buz"))
+            this[currentId]?.updateIcons(newIcons2)
+        }
+
+    }
+
     tubeViewIndex=0;
     for (chunk in chunkedLevels)
     {
@@ -99,6 +112,9 @@ fun GameContent(level:List<List<String>>?) {
                     val model = tubeViewModelList[tubeViewIndex] ?: return@Column
                     model.setOtherClick { clickedId ->
                         onOtherClick(clickedId)
+                    }
+                    model.updateIcons= {
+                        updateIcons2()
                     }
                     TubeView(model,modifier = Modifier)
                 }

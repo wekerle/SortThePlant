@@ -41,19 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SortThePlantsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    StaticGrid(level)
-                   // GameUI()
                     MainScreen()
-//                    val iconList = listOf(
-//                        R.drawable.wheat,
-//                        R.drawable.barley,
-//                        R.drawable.oat,
-//                       // R.drawable.sunflower,
-//                      //  R.drawable.lucern,
-//                        R.drawable.lucern2
-//                    )
-//
-//                    TubeView(iconList = iconList)
                 }
             }
         }

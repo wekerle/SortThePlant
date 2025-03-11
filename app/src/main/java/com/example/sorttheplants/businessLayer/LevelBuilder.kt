@@ -32,10 +32,11 @@ class LevelBuilder private constructor() {
             listOf("buz", "arp","buz")
         ))
         myDic.put(2, listOf(
+            listOf("buz"),
             listOf("buz")
         ))
         myDic.put(3, listOf(
-            listOf("buz"),
+            listOf("buz","arp","tor"),
             listOf("buz")
         ))
     }
