@@ -136,6 +136,13 @@ private fun getIconFromCode(code:String):Int
         "buz" -> R.drawable.wheat
         "arp" -> R.drawable.barley
         "tor" -> R.drawable.corn
-        else -> R.drawable.oat // Default image if no match
+        "loh" -> R.drawable.clover
+        "ugo" -> R.drawable.cucumber
+        "luc" -> R.drawable.lucern
+        "zab" -> R.drawable.oat
+        "pit" -> R.drawable.potato
+        "nap" -> R.drawable.sunflower
+        "par" -> R.drawable.tomato
+        else -> throw Exception("Missing Icon")// Default image if no match
     }
 }
